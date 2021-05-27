@@ -1,0 +1,41 @@
+<html>
+    <head><title>Kompress Photo di client</title></head>
+    <body>
+        <div id="app">
+			<p>upload banyak</p>
+			<input type="file" ref="uploadbanyak" v-on:change="uploadbanyak" multiple="multiple"/>
+            <button v-on:click="upload">upload</button>
+            <input type="text" v-model="pesan">
+            {{ pesan }}
+        </div>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+		<script src="compressorjs/dist/compressor.min.js"></script>
+		<script src="axios.min.js"></script>
+		<script>
+            var formData = new FormData();
+			var app = new Vue({
+				el: '#app',
+                data: {
+                    pesan : ''
+                },
+				methods: {
+					uploadbanyak: function(){
+                        for(var i = 0; i < this.$refs.uploadbanyak.files.length; i++){
+                            new Compressor(this.$refs.uploadbanyak.files[i], {
+                                    quality: 0.1,
+                                    success(result){
+                                        formData.append('uploadbanyak[]', result, result.name)
+                                    }
+                            })
+                        }
+					},
+                    upload: function(){
+                        axios.post('http://localhost/puspadeli/public/api/testingupload/uploadbanyak', formData)
+                        .then(function(response){
+                        })
+                    }
+				}
+			});
+		</script>
+    </body>
+</html>
